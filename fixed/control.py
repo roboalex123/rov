@@ -4,7 +4,7 @@ import time
 import pygame
 import math #needed for joystick
 from pygame.rect import Rect
-import widgets
+#import widgets
 import serial #needed to talk with Arduino
 
 pygame.init()
@@ -71,6 +71,9 @@ while True:
     '''
     #add to dictionary
     #cube gives more control with lower power
+    print(x_new)
+    print(y_new)
+    print(z_new)
     commands['camera']= z_new**3
     commands['frontLeft']=(-1*y_new)**3
     commands['frontRight']=x_new**3

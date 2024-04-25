@@ -6,17 +6,17 @@
 using namespace std;
 
 const int NUM_NORMAL_SERVOS = 1;
-rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "camera")};
+rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "camera", 180)};
 
 const int NUM_THRUSTERS = 6;
 Thruster thrusters[NUM_THRUSTERS] = {
-  (Thruster(23, "frontLeft"),
-  (Thruster(24, "frontRight"),
-  (Thruster(25, "middleLeft"),
-  (Thruster(26, "middleRight"),
-  (Thruster(27, "backLeft"),
-  (Thruster(28, "backRight")
-}
+  (Thruster(23, "frontLeft")),
+  (Thruster(24, "frontRight")),
+  (Thruster(25, "middleLeft")),
+  (Thruster(26, "middleRight")),
+  (Thruster(27, "backLeft")),
+  (Thruster(28, "backRight"))
+};
 
 
 void setup() {
@@ -29,7 +29,7 @@ void setup() {
     normalServos[i].init();
   }
 
-  delay(1000);
+  delay(7000);
 }
 
 void loop() {
@@ -44,14 +44,10 @@ void loop() {
 
   if (Serial.available()) {
     data = Serial.readStringUntil( '\x7D' );
-    Serial.println(data);
+   // Serial.println(data);
     StaticJsonDocument<1000> doc;
-    DeserializationError error = deserializeJson(doc, data);
-    if (error) {
-      Serial.print(F("deserializeJson() failed: "));
-      Serial.println(error.c_str());
-      return;
-    }
+    deserializeJson(doc, data);
+ 
 
     for (int i = 0; i < NUM_THRUSTERS; i++) {
       thrusters[i].setSpeed(doc[thrusters[i].getName()]);
