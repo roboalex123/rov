@@ -86,6 +86,31 @@ while True:
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
     ser.flush()
 
+    try:
+        data = ser.readline().decode("utf-8")
+
+        dict_json = json.loads(data)
+
+        camera = dict_json['camera']
+        frontLeft = dict_json['frontLeft']
+        frontRight = dict_json['frontRight']
+        middleLeft = dict_json['middleLeft']
+        middleRight = dict_json['middleRight']
+        backLeft = dict_json['backLeft']
+        backRight = dict_json['backRight']
+
+        print(f"camera: {camera}")
+        print(f"frontLeft: {frontLeft}")
+        print(f"frontRight: {frontRight}")
+        print(f"middleLeft: {middleLeft}")
+        print(f"middleRight: {middleRight}")
+        print(f"backLeft: {backLeft}")
+        print(f"backRight: {backRight}")
+
+        ser.flush()
+    except Exception as e:
+        print(e)
+
     time.sleep(0.01)
 
 pygame.quit()

@@ -45,8 +45,8 @@ void loop() {
   if (Serial.available()) {
     data = Serial.readStringUntil( '\x7D' );
    // Serial.println(data);
-    StaticJsonDocument<1000> doc;
-    deserializeJson(doc, data);
+    StaticJsonDocument<1000> readDoc;
+    deserializeJson(readDoc, data);
  
 
     for (int i = 0; i < NUM_THRUSTERS; i++) {
@@ -56,6 +56,18 @@ void loop() {
     for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
       normalServos[i].setAngle(doc[normalServos[i].getName()]);
     }
+
+    StaticJsonDocument<1000> writeDoc;
+    for (int i = 0; i < NUM_THRUSTERS; i++) {
+      writeDoc[thrusters[i].getName()] = thrusters[i].getSpeed();
+    }
+
+    for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
+      writeDoc[normalServos[i].getName()] = normalServos[i].getAngle();
+    }
+
+    serializeJson(writeDoc, Serial);
+    Serial.println();
 
     delay(10);
   }
