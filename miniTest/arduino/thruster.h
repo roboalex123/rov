@@ -32,6 +32,7 @@ class Thruster {
     void init() {
       servo.attach(pin);
       stop();
+      delay(1000);
     }
 
     void setSpeed(float speed) {
