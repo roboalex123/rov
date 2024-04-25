@@ -50,11 +50,11 @@ void loop() {
  
 
     for (int i = 0; i < NUM_THRUSTERS; i++) {
-      thrusters[i].setSpeed(doc[thrusters[i].getName()]);
+      thrusters[i].setSpeed(readDoc[thrusters[i].getName()]);
     }
 
     for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
-      normalServos[i].setAngle(doc[normalServos[i].getName()]);
+      normalServos[i].setAngle(readDoc[normalServos[i].getName()]);
     }
 
     StaticJsonDocument<1000> writeDoc;
