@@ -1,32 +1,32 @@
 #include <ArduinoJson.h>
 #include <ArduinoJson.hpp>
-//#include <ArduinoSTL.h> // download from IDE
-//#include <vector>
 #include <Servo.h>
 #include "thruster.h"
 #include "rovServo.h"
 using namespace std;
 
-//vector<rovServo> servos;
-//servos.push_back(rovServo(22, "camera"));
+const int NUM_NORMAL_SERVOS = 1;
+rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "camera")};
 
-//vector<Thruster> thrusters;
-//thrusters.push_back(Thruster(23, "frontLeft"));
-//thrusters.push_back(Thruster(24, "frontRight"));
-//thrusters.push_back(Thruster(25, "middleLeft"));
-//thrusters.push_back(Thruster(26, "middleRight"));
-//thrusters.push_back(Thruster(27, "backLeft"));
-//thrusters.push_back(Thruster(28, "backRight"));
+const int NUM_THRUSTERS = 6;
+Thruster thrusters[NUM_THRUSTERS] = {
+  (Thruster(23, "frontLeft"),
+  (Thruster(24, "frontRight"),
+  (Thruster(25, "middleLeft"),
+  (Thruster(26, "middleRight"),
+  (Thruster(27, "backLeft"),
+  (Thruster(28, "backRight")
+}
 
 
 void setup() {
   Serial.begin(9600);
-  for (int i = 0; i < thrusters.size(); i++) {
+  for (int i = 0; i < NUM_THRUSTERS; i++) {
     thrusters[i].init();
   }
 
-  for (int i = 0; i < servos.size(); i++) {
-    servos[i].init();
+  for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
+    normalServos[i].init();
   }
 
   delay(1000);
@@ -53,12 +53,12 @@ void loop() {
       return;
     }
 
-    for (int i = 0; i < thrusters.size(); i++) {
+    for (int i = 0; i < NUM_THRUSTERS; i++) {
       thrusters[i].setSpeed(doc[thrusters[i].getName()]);
     }
 
-    for (int i = 0; i < servos.size(); i++) {
-      servos[i].setAngle(doc[servos[i].getName()]);
+    for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
+      normalServos[i].setAngle(doc[normalServos[i].getName()]);
     }
 
     delay(10);
