@@ -10,12 +10,12 @@ rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "camera", 180)};
 
 const int NUM_THRUSTERS = 6;
 Thruster thrusters[NUM_THRUSTERS] = {
-  (Thruster(23, "frontLeft")),
-  (Thruster(24, "frontRight")),
-  (Thruster(25, "middleLeft")),
-  (Thruster(26, "middleRight")),
-  (Thruster(27, "backLeft")),
-  (Thruster(28, "backRight"))
+  (Thruster(26, "frontLeft")),
+  (Thruster(23, "frontRight")),
+  (Thruster(28, "middleLeft")),
+  (Thruster(27, "middleRight")),
+  (Thruster(25, "backLeft")),
+  (Thruster(24, "backRight"))
 };
 
 
