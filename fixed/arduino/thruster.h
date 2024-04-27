@@ -18,7 +18,7 @@ class Thruster {
   static const int MAX = 1900;
 
   // private methods
-  int mapSpeed(int speed) {
+  int mapSpeed(float speed) {
     return ((speed + 1) * 400) + 1100;
   }
 
