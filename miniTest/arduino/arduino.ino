@@ -33,12 +33,27 @@ void setup() {
 }
 
 void loop() {
-  int DELAY = 2000;
-
-  for (int i = 0; i < NUM_THRUSTERS; i++) {
-    thrusters[i].setSpeed(0.5);
-    delay(DELAY);
-    thrusters[i].setSpeed(0);
-    delay(DELAY);
+  int DELAY = 1500;
+  for (int j = 0; j<6; j++){
+    Serial.println(j);
+    for (int i = 50; i < 55; i++) {
+      Serial.println(i);
+      Serial.println("POSITIVE");
+      thrusters[j].setSpeedRaw(1500 + i);
+      delay(DELAY);
+      Serial.println("STOP");
+      thrusters[j].setSpeedRaw(1500);
+      delay(DELAY);
+      Serial.println("");
+      /*
+      Serial.println("NEGATIVE");
+      thrusters[j].setSpeedRaw(1500 - i); 
+      delay(DELAY); 
+      Serial.println("STOP");
+      thrusters[j].setSpeedRaw(1500);
+      delay(DELAY); 
+      Serial.println("");
+      */
+    }
   }
 }

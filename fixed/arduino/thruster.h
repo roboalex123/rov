@@ -46,7 +46,7 @@ class Thruster {
       this->speed = 0;
     }
 
-    int getSpeed() {
+    int getSpeed() { //int?? speed is a float
       return speed;
     }
 

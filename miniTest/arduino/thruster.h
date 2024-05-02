@@ -40,6 +40,11 @@ class Thruster {
       servo.writeMicroseconds(thrust);
       this->speed = speed;
     }
+    void setSpeedRaw(int speed) {
+      thrust = speed;
+      servo.writeMicroseconds(thrust);
+      this->speed = speed;
+    }
 
     void stop() {
       thrust = STOP;

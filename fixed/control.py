@@ -41,19 +41,19 @@ while True:
         for i in range(joystick.get_numbuttons()):
             if joystick.get_button(i) or joystick1.get_button(i):
                 print(f"Button {i} is pressed")
-    if abs(y_new)<.01: #define a dead zone
+    if abs(y_new)<.001: #define a dead zone
         y_new=0
-    if abs(x_new)<.01: #define a dead zone
+    if abs(x_new)<.001: #define a dead zone
         x_new=0
-    if abs(z_new)<.01: #define a dead zone
+    if abs(z_new)<.001: #define a dead zone
         z_new=0
     
     #rotate x and y axis of joystick 45 degrees
     
-    x_new=(x_new*math.cos(math.pi/-4))-(y_new*math.sin(math.pi/-4)) #horizontal left
-    y_new=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
+    x_new2=(x_new*math.cos(math.pi/-4))-(y_new*math.sin(math.pi/-4)) #horizontal left
+    y_new2=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
+    
     """
-
     x_new=(x_new*math.sqrt(2)/2)-(y_new*math.sqrt(2)/2) #horizontal left
     y_new=(x_new*math.sqrt(2)/2)+(y_new*math.sqrt(2)/2) #horizontal right
     """
@@ -71,16 +71,15 @@ while True:
     '''
     #add to dictionary
     #cube gives more control with lower power
-    print(x_new)
-    print(y_new)
-    print(z_new)
-    commands['camera']= z_new**3
-    commands['frontLeft']=(-1*y_new)**3
-    commands['frontRight']=x_new**3
-    commands['middleLeft']=z_new**3
-    commands['middleRight']=z_new**3
-    commands['backLeft']=(-1*x_new)**3
-    commands['backRight']=y_new**3
+    
+    commands['camera']= z_new
+    commands['frontLeft']=(-1*y_new2)
+    commands['frontRight']=x_new2
+    commands['middleLeft']=z_new
+    commands['middleRight']=z_new
+    commands['backLeft']=(-1*x_new2)
+    commands['backRight']=y_new2
+    print(commands['frontLeft'])
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
