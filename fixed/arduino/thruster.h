@@ -17,11 +17,29 @@ class Thruster {
   // 1900 is the maximum value for the ESC
   static const int MAX = 1900;
 
-  // private methods
-  int mapSpeed(float speed) {
-    return ((speed + 1) * 400) + 1100;
+  int thrustClamp(int thrust) {
+    if (thrust < MIN) {
+      return MIN;
+    } else if (thrust > MAX) {
+      return MAX;
+    } else {
+      return thrust;
+    }
   }
 
+  // private methods
+  int mapSpeed(float speed) {
+    float normThrust = thrust + 1;
+    int offSet = 50;
+    if (normThrust < 1) {
+      return (normThrust) * 400 + (1100 - offSet);
+    } else if (normThrust > 1) {
+      return (normThrust) * 400 + (1100 + offSet);
+    } else {
+      return (thrust + 1) * 400 + 1100;
+    }
+  }
+  
 
   public:
     Thruster(byte pin, String name) {
@@ -35,7 +53,7 @@ class Thruster {
     }
 
     void setSpeed(float speed) {
-      thrust = mapSpeed(speed);
+      thrust = thrustClamp(mapSpeed(speed));
       servo.writeMicroseconds(thrust);
       this->speed = speed;
     }
@@ -46,7 +64,7 @@ class Thruster {
       this->speed = 0;
     }
 
-    int getSpeed() { //int?? speed is a float
+    int getSpeed() {
       return speed;
     }
 

@@ -37,78 +37,60 @@ while True:
     if joystick is not None:
         x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
         y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
-        z_new=joystick1.get_axis(2) #right joystick x-axis, used for vertical
-        for i in range(joystick.get_numbuttons()):
-            if joystick.get_button(i) or joystick1.get_button(i):
-                print(f"Button {i} is pressed")
+        z_new=joystick.get_axis(5) #right joystick x-axis, used for vertical
+        r_new=joystick.get_axis(2) #right joystick y-axis, used for rotation
+        r_new=-0.125*r_new #reduce rotation speed
+
+        stepX = joystick1.get_axis(0)
+        stepY = joystick1.get_axis(1)
+        stepZ = joystick1.get_axis(5)
+
     if abs(y_new)<.001: #define a dead zone
         y_new=0
     if abs(x_new)<.001: #define a dead zone
         x_new=0
     if abs(z_new)<.001: #define a dead zone
         z_new=0
+    if abs(r_new)<.001: #define a dead zone
+        r_new=0
+
+    if abs(stepX)<.001: #define a dead zone
+        stepX=0
+    if abs(stepY)<.001: #define a dead zone
+        stepY=0
+    if abs(stepZ)<.001: #define a dead zone
+        stepZ=0
     
     #rotate x and y axis of joystick 45 degrees
     
     x_new2=(x_new*math.cos(math.pi/-4))-(y_new*math.sin(math.pi/-4)) #horizontal left
     y_new2=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
-    
-    """
-    x_new=(x_new*math.sqrt(2)/2)-(y_new*math.sqrt(2)/2) #horizontal left
-    y_new=(x_new*math.sqrt(2)/2)+(y_new*math.sqrt(2)/2) #horizontal right
-    """
 
-    #limits joystick values to +/- 1
-    '''
-    if x_new>1:
-        x_new=1.0
-    if y_new>1:
-        y_new=1.0
-    if x_new<-1:
-        x_new=-1.0
-    if y_new<-1:
-        y_new=-1.0
-    '''
-    #add to dictionary
-    #cube gives more control with lower power
-    
-    commands['camera']= z_new
-    commands['frontLeft']=(-1*y_new2)
-    commands['frontRight']=x_new2
-    commands['middleLeft']=z_new
-    commands['middleRight']=z_new
-    commands['backLeft']=(-1*x_new2)
-    commands['backRight']=y_new2
-    print(commands['frontLeft'])
+    fl = ((-1*y_new2)+r_new) #front left thruster
+    fr = ((-1*x_new2)+r_new) #front right thruster
+    bl = (x_new2+r_new) #back left thruster
+    br = (y_new2+r_new) #back right thruster
+
+    # clamp values to -1
+    fl = max(-1, min(1, fl))
+    fr = max(-1, min(1, fr))
+    bl = max(-1, min(1, bl))
+    br = max(-1, min(1, br))
+
+    commands['frontLeft'] = fl
+    commands['frontRight'] = fr
+    commands['backLeft'] = bl
+    commands['backRight'] = br
+    commands['midLeft'] = z_new**3
+    commands['midRight'] = z_new**3
+
+    commands['X'] = stepX**3
+    commands['Y'] = stepY**3
+    commands['Z'] = stepZ**3
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
     ser.flush()
-
-    try:
-        data = ser.readline().decode("utf-8")
-
-        dict_json = json.loads(data)
-
-        camera = dict_json['camera']
-        frontLeft = dict_json['frontLeft']
-        frontRight = dict_json['frontRight']
-        middleLeft = dict_json['middleLeft']
-        middleRight = dict_json['middleRight']
-        backLeft = dict_json['backLeft']
-        backRight = dict_json['backRight']
-
-        print(f"camera: {camera}")
-        print(f"frontLeft: {frontLeft}")
-        print(f"frontRight: {frontRight}")
-        print(f"middleLeft: {middleLeft}")
-        print(f"middleRight: {middleRight}")
-        print(f"backLeft: {backLeft}")
-        print(f"backRight: {backRight}")
-
-        ser.flush()
-    except Exception as e:
-        print(e)
 
     time.sleep(0.01)
 
