@@ -45,20 +45,20 @@ while True:
         stepY = joystick1.get_axis(1)
         stepZ = joystick1.get_axis(5)
 
-    if abs(y_new)<.001: #define a dead zone
+    if abs(y_new)<.01: #define a dead zone
         y_new=0
-    if abs(x_new)<.001: #define a dead zone
+    if abs(x_new)<.01: #define a dead zone
         x_new=0
-    if abs(z_new)<.001: #define a dead zone
+    if abs(z_new)<.01: #define a dead zone
         z_new=0
-    if abs(r_new)<.001: #define a dead zone
+    if abs(r_new)<.01: #define a dead zone
         r_new=0
 
-    if abs(stepX)<.001: #define a dead zone
+    if abs(stepX)<.01: #define a dead zone
         stepX=0
-    if abs(stepY)<.001: #define a dead zone
+    if abs(stepY)<.01: #define a dead zone
         stepY=0
-    if abs(stepZ)<.001: #define a dead zone
+    if abs(stepZ)<.01: #define a dead zone
         stepZ=0
     
     #rotate x and y axis of joystick 45 degrees
@@ -69,7 +69,7 @@ while True:
     fl = ((-1*y_new2)+r_new) #front left thruster
     fr = ((-1*x_new2)+r_new) #front right thruster
     bl = (x_new2+r_new) #back left thruster
-    br = (y_new2+r_new) #back right thruster
+    br = ((-y_new2)+r_new) #back right thruster
 
     # clamp values to -1
     fl = max(-1, min(1, fl))

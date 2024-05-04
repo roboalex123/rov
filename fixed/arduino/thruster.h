@@ -29,14 +29,14 @@ class Thruster {
 
   // private methods
   int mapSpeed(float speed) {
-    float normThrust = thrust + 1;
+    float normThrust = speed + 1;
     int offSet = 50;
     if (normThrust < 1) {
       return (normThrust) * 400 + (1100 - offSet);
     } else if (normThrust > 1) {
       return (normThrust) * 400 + (1100 + offSet);
     } else {
-      return (thrust + 1) * 400 + 1100;
+      return (speed + 1) * 400 + 1100;
     }
   }
   

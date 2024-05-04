@@ -6,9 +6,11 @@ class Stepper {
     byte stepPin;
 
     static const int stepDelay = 20;
+    static const int delayPerStep = 250;
+    static const int numTicks = 100;
 
   public:
-    stepper(byte newDirectionPin, byte newStepPin, String newName): directionPin(newDirectionPin), stepPin(newStepPin), name(newName) {
+    Stepper(byte newDirectionPin, byte newStepPin, String newName): directionPin(newDirectionPin), stepPin(newStepPin), name(newName) {
       pinMode(directionPin, OUTPUT);
       pinMode(stepPin, OUTPUT);
     }
@@ -19,15 +21,21 @@ class Stepper {
 
     void left() const {
       digitalWrite(directionPin, HIGH);
-      digitalWrite(stepPin, HIGH);
-      delay(stepDelay);
-      digitalWrite(stepPin, LOW);
+      for (int i = 0; i < numTicks; i++) {
+        digitalWrite(stepPin, HIGH);
+        delay(stepDelay);
+        digitalWrite(stepPin, LOW);
+        delay(delayPerStep);
+      }
     }
 
     void right() const {
       digitalWrite(directionPin, LOW);
-      digitalWrite(stepPin, HIGH);
-      delay(stepDelay);
-      digitalWrite(stepPin, LOW);
+      for (int i = 0; i < numTicks; i++) {
+        digitalWrite(stepPin, HIGH);
+        delay(stepDelay);
+        digitalWrite(stepPin, LOW);
+        delay(delayPerStep);
+      }
     }
 };
