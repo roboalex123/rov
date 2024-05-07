@@ -13,8 +13,8 @@ const int NUM_THRUSTERS = 6;
 Thruster thrusters[NUM_THRUSTERS] = {
   (Thruster(28, "frontLeft")),
   (Thruster(23, "frontRight")),
-  (Thruster(25, "middleLeft")),
-  (Thruster(26, "middleRight")),
+  (Thruster(25, "midLeft")),
+  (Thruster(26, "midRight")),
   (Thruster(27, "backLeft")),
   (Thruster(24, "backRight"))
 };
@@ -61,13 +61,13 @@ void loop() {
     thrusters[3].setSpeed(readDoc[thrusters[3].getName()]);
     thrusters[4].setSpeed(readDoc[thrusters[4].getName()]);
     thrusters[5].setSpeed(readDoc[thrusters[5].getName()]);
-    /*for (int i = 0; i < NUM_THRUSTERS; i++) {
+    for (int i = 0; i < NUM_THRUSTERS; i++) {
       thrusters[i].setSpeed(readDoc[thrusters[i].getName()]);
     }
 
     for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
       normalServos[i].setAngle(readDoc[normalServos[i].getName()]);
-    }*/
+    }
 
     /*for (int i = 0; i < NUM_STEPPER_MOTORS; i++) {
       float left = readDoc[stepperMotors[i].getName()];

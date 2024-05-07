@@ -37,7 +37,7 @@ while True:
     if joystick is not None:
         x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
         y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
-        z_new=joystick.get_axis(5) #right joystick x-axis, used for vertical
+        z_new=joystick.get_axis(4) #right joystick x-axis, used for vertical
         r_new=joystick.get_axis(2) #right joystick y-axis, used for rotation
         r_new=-0.125*r_new #reduce rotation speed
 
