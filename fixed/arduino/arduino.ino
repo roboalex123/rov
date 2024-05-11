@@ -3,7 +3,7 @@
 #include <Servo.h>
 #include "thruster.h"
 #include "rovServo.h"
-#include "stepper.h"
+#include "test.h"
 using namespace std;
 
 const int NUM_NORMAL_SERVOS = 1;
@@ -20,10 +20,13 @@ Thruster thrusters[NUM_THRUSTERS] = {
 };
 
 const int NUM_STEPPER_MOTORS = 3;
-Stepper stepperMotors[NUM_STEPPER_MOTORS] = {
-  (Stepper(5, 2, "X")),
-  (Stepper(6, 3, "Y")),
-  (Stepper(7, 4, "Z"))
+Test stepperMotors[NUM_STEPPER_MOTORS] = {
+  //(Stepper(5, 2, "X")),
+  //(Stepper(6, 3, "Y")),
+  //(Stepper(7, 4, "Z"))
+  (Test(200,5, 2, "X")),
+  (Test(200,6, 3, "Y")),
+  (Test(200,7, 4, "Z"))
 };
 
 void setup() {
@@ -36,47 +39,57 @@ void setup() {
     normalServos[i].init();
   }
 
+  /*for (int i = 0; i < 1; i++){
+    stepperMotors[i].setFast(200);
+  }*/
+
   delay(7000);
 }
-
+int stepperOn = 0;
 void loop() {
   String data;
   int smallDelay = 100;
-  while (!Serial.available()) {
-    digitalWrite(13, HIGH);
-    delay(smallDelay);
-    digitalWrite(13, LOW);
-    delay(smallDelay);
-  }
 
-  if (Serial.available()) {
-    data = Serial.readStringUntil( '\x7D' );
-   // Serial.println(data);
+  if (Serial.available())
+  {
+    data = Serial.readStringUntil('\x7D');
+    // Serial.println(data);
     StaticJsonDocument<500> readDoc;
     deserializeJson(readDoc, data);
- 
-    thrusters[0].setSpeed(readDoc[thrusters[0].getName()]);
-    thrusters[1].setSpeed(readDoc[thrusters[1].getName()]);
-    thrusters[2].setSpeed(readDoc[thrusters[2].getName()]);
-    thrusters[3].setSpeed(readDoc[thrusters[3].getName()]);
-    thrusters[4].setSpeed(readDoc[thrusters[4].getName()]);
-    thrusters[5].setSpeed(readDoc[thrusters[5].getName()]);
-    for (int i = 0; i < NUM_THRUSTERS; i++) {
+
+    for (int i = 0; i < NUM_THRUSTERS; i++)
+    {
       thrusters[i].setSpeed(readDoc[thrusters[i].getName()]);
     }
 
-    for (int i = 0; i < NUM_NORMAL_SERVOS; i++) {
+    for (int i = 0; i < NUM_NORMAL_SERVOS; i++)
+    {
       normalServos[i].setAngle(readDoc[normalServos[i].getName()]);
     }
 
-    /*for (int i = 0; i < NUM_STEPPER_MOTORS; i++) {
-      float left = readDoc[stepperMotors[i].getName()];
+    for (int i = 0; i < 1; i++)
+    {
+      stepperOn = readDoc[stepperMotors[i].getName()];
 
-      if (left < -0.001) {
-        stepperMotors[i].left();
-      } else if (left > 0.001) {
-        stepperMotors[i].right();
+      /*if (left < -0.01)
+      {
+        stepperMotors[i].clockwise();
       }
-    }*/
+      else if (left > 0.01)
+      {
+        stepperMotors[i].counterclockwise();
+      }*/
+
+      stepperMotors[i].setFast(1200);
+    }
   }
+
+  if (stepperOn == 1)
+  {
+    stepperMotors[0].run();
+  } else if (stepperOn == -1) {
+    stepperMotors[0].run(true);
+  }
+
 }
+// hello

@@ -37,34 +37,59 @@ while True:
     if joystick is not None:
         x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
         y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
-        z_new=joystick.get_axis(4) #right joystick x-axis, used for vertical
-        r_new=joystick.get_axis(2) #right joystick y-axis, used for rotation
-        r_new=-0.125*r_new #reduce rotation speed
-
-        stepX = joystick1.get_axis(0)
+        #zx_new=joystick.get_axis(3)**3 #right joystick x-axis, used for vertical
+        #zy_new=joystick.get_axis(4)**3
+        #z_new = joystick.get_axis(5)**3
+        #r_new=(joystick.get_axis(2)*-1)**3 #right joystick y-axis, used for rotation
+        z_new = (joystick1.get_axis(1)*-0.75)**3
+        r_new=(joystick1.get_axis(0)*-0.25)**3
+        stepXO = joystick1.get_button(0)
+        stepXC = joystick1.get_button(1)
         stepY = joystick1.get_axis(1)
         stepZ = joystick1.get_axis(5)
+
+    if (stepXO):
+        stepX = 1
+    elif (stepXC):
+        stepX = -1
+    else:
+        stepX = 0
 
     if abs(y_new)<.01: #define a dead zone
         y_new=0
     if abs(x_new)<.01: #define a dead zone
         x_new=0
+    """
+    if abs(zx_new)<.01: #define a dead zone
+        zx_new=0
+    if abs(zy_new)<.01: #define a dead zone
+        zy_new=0
+    """
     if abs(z_new)<.01: #define a dead zone
         z_new=0
     if abs(r_new)<.01: #define a dead zone
         r_new=0
-
+    """
     if abs(stepX)<.01: #define a dead zone
         stepX=0
     if abs(stepY)<.01: #define a dead zone
         stepY=0
     if abs(stepZ)<.01: #define a dead zone
         stepZ=0
+
+    if(stepX)>.07: #define a dead zone
+        stepX=1
+    """
     
     #rotate x and y axis of joystick 45 degrees
     
     x_new2=(x_new*math.cos(math.pi/-4))-(y_new*math.sin(math.pi/-4)) #horizontal left
     y_new2=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
+
+    #rotate thumb axes for up/down and roll movements
+    #zx_new2=(zx_new*math.cos(math.pi/-4))-(zy_new*math.sin(math.pi/-4)) #horizontal left
+    #zy_new2=(zx_new*math.sin(math.pi/-4))+(zy_new*math.cos(math.pi/-4)) #horizontal right
+
 
     fl = ((-1*y_new2)+r_new) #front left thruster
     fr = ((-1*x_new2)+r_new) #front right thruster
@@ -76,17 +101,19 @@ while True:
     fr = max(-1, min(1, fr))
     bl = max(-1, min(1, bl))
     br = max(-1, min(1, br))
+    #zx_new = max(-1, min(1, zx_new))
+    #zy_new = max(-1, min(1, zy_new))
 
     commands['frontLeft'] = fl
     commands['frontRight'] = fr
     commands['backLeft'] = bl
     commands['backRight'] = br
-    commands['midLeft'] = z_new**3
-    commands['midRight'] = z_new**3
+    commands['midLeft'] = -1*z_new
+    commands['midRight'] = z_new
 
-    commands['X'] = stepX**3
-    commands['Y'] = stepY**3
-    commands['Z'] = stepZ**3
+    commands['X'] = stepX
+    commands['Y'] = stepY
+    commands['Z'] = stepZ
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
