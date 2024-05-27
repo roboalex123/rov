@@ -47,13 +47,29 @@ while True:
         stepXC = joystick1.get_button(1)
         stepY = joystick1.get_axis(1)
         stepZ = joystick1.get_axis(5)
+        #stepZO = joystick1.get_button(4)
+        #stepZC = joystick1.get_button(5)
 
     if (stepXO):
         stepX = 1
+        #stepY = 1
+        #stepZ = 1
     elif (stepXC):
         stepX = -1
+        #stepY = -1
+        #stepZ = -1
     else:
         stepX = 0
+        #stepY = 0
+        #stepZ = 0
+    """
+    if (stepZO):
+        stepZ = 1
+    elif (stepZC):
+        stepZ = -1
+    else:
+        stepZ = 0
+    """
 
     if abs(y_new)<.01: #define a dead zone
         y_new=0

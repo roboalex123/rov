@@ -104,7 +104,7 @@ void loop(){
 }
 */
 const int STEPS = 2000; 
-Stepper test = Stepper(STEPS,5,2);
+Stepper test = Stepper(STEPS,7,4);
 
 void setup(){
   test.setSpeed(60);
