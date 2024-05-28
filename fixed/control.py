@@ -37,12 +37,8 @@ while True:
     if joystick is not None:
         x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
         y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
-        #zx_new=joystick.get_axis(3)**3 #right joystick x-axis, used for vertical
-        #zy_new=joystick.get_axis(4)**3
-        #z_new = joystick.get_axis(5)**3
-        #r_new=(joystick.get_axis(2)*-1)**3 #right joystick y-axis, used for rotation
-        z_new = (joystick1.get_axis(1)*-0.75)**3
-        r_new=(joystick1.get_axis(0)*-0.25)**3
+        z_new = (joystick1.get_axis(1)*-0.75)
+        r_new=(joystick1.get_axis(2)*-0.25)
         stepXO = joystick1.get_button(0)
         stepXC = joystick1.get_button(1)
         stepY = joystick1.get_axis(1)
@@ -69,23 +65,23 @@ while True:
         stepZ = -1
     else:
         stepZ = 0
-    """
+    
 
-    if abs(y_new)<.01: #define a dead zone
+    if abs(y_new)<.0001: #define a dead zone
         y_new=0
-    if abs(x_new)<.01: #define a dead zone
+    if abs(x_new)<.0001: #define a dead zone
         x_new=0
-    """
+    
     if abs(zx_new)<.01: #define a dead zone
         zx_new=0
     if abs(zy_new)<.01: #define a dead zone
         zy_new=0
-    """
-    if abs(z_new)<.01: #define a dead zone
+    
+    if abs(z_new)<.0001: #define a dead zone
         z_new=0
-    if abs(r_new)<.01: #define a dead zone
+    if abs(r_new)<.0001: #define a dead zone
         r_new=0
-    """
+    
     if abs(stepX)<.01: #define a dead zone
         stepX=0
     if abs(stepY)<.01: #define a dead zone
