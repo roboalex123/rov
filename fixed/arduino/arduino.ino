@@ -7,7 +7,7 @@
 using namespace std;
 
 const int NUM_NORMAL_SERVOS = 1;
-rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "camera", 180)};
+rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "frontCamera")};
 
 const int NUM_THRUSTERS = 6;
 Thruster thrusters[NUM_THRUSTERS] = {
@@ -17,16 +17,6 @@ Thruster thrusters[NUM_THRUSTERS] = {
   (Thruster(26, "midRight")),
   (Thruster(27, "backLeft")),
   (Thruster(24, "backRight"))
-};
-
-const int NUM_STEPPER_MOTORS = 3;
-Test stepperMotors[NUM_STEPPER_MOTORS] = {
-  //(Stepper(5, 2, "X")),
-  //(Stepper(6, 3, "Y")),
-  //(Stepper(7, 4, "Z"))
-  (Test(200,5, 2, "X")),
-  (Test(200,6, 3, "Y")),
-  (Test(200,7, 4, "Z"))
 };
 
 void setup() {
@@ -39,13 +29,9 @@ void setup() {
     normalServos[i].init();
   }
 
-  /*for (int i = 0; i < 1; i++){
-    stepperMotors[i].setFast(200);
-  }*/
-
   delay(7000);
 }
-int stepperOn = 0;
+
 void loop() {
   String data;
   int smallDelay = 100;
@@ -66,30 +52,6 @@ void loop() {
     {
       normalServos[i].setAngle(readDoc[normalServos[i].getName()]);
     }
-
-    for (int i = 0; i < 1; i++)
-    {
-      stepperOn = readDoc[stepperMotors[i].getName()];
-
-      /*if (left < -0.01)
-      {
-        stepperMotors[i].clockwise();
-      }
-      else if (left > 0.01)
-      {
-        stepperMotors[i].counterclockwise();
-      }*/
-
-      stepperMotors[i].setFast(1200);
-    }
-  }
-
-  if (stepperOn == 1)
-  {
-    stepperMotors[0].run();
-  } else if (stepperOn == -1) {
-    stepperMotors[0].run(true);
   }
 
 }
-// hello

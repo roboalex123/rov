@@ -9,7 +9,9 @@ import serial #needed to talk with Arduino
 
 pygame.init()
 
-ser = serial.Serial(port='COM5', baudrate=9600, timeout=.1,dsrdtr=True)#dsrdtr=True stops Arduino Mega from autoresetting
+ser = serial.Serial(port = 'COM5', baudrate = 9600, timeout = .1, dsrdtr = True) #dsrdtr = True stops Arduino Mega from autoresetting
+
+vert_mod = False
 
 joystick = None
 if pygame.joystick.get_count()==0:
@@ -19,9 +21,6 @@ else:
     joystick.init()#initalize joystick
     joystick1 = pygame.joystick.Joystick(1)
     joystick1.init()#initalize joystick
-    print(joystick.get_numaxes())
-    print(joystick.get_numbuttons())
-
 
 while True:
         # Get input from joystick and keyboard
@@ -37,61 +36,31 @@ while True:
     if joystick is not None:
         x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
         y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
-        z_new = (joystick1.get_axis(1)*-0.75)
+
+        zx_new = (joystick1.get_axis(0)*-0.75)
+        zy_new = (joystick1.get_axis(1)*-0.75)
+
+        z_mod = joystick1.get_axis(5)
+        if joystick.get_button(7):
+            vert_mod = not vert_mod
+
         r_new=(joystick1.get_axis(2)*-0.25)
-        stepXO = joystick1.get_button(0)
-        stepXC = joystick1.get_button(1)
-        stepY = joystick1.get_axis(1)
-        stepZ = joystick1.get_axis(5)
-        #stepZO = joystick1.get_button(4)
-        #stepZC = joystick1.get_button(5)
 
-    if (stepXO):
-        stepX = 1
-        #stepY = 1
-        #stepZ = 1
-    elif (stepXC):
-        stepX = -1
-        #stepY = -1
-        #stepZ = -1
-    else:
-        stepX = 0
-        #stepY = 0
-        #stepZ = 0
-    """
-    if (stepZO):
-        stepZ = 1
-    elif (stepZC):
-        stepZ = -1
-    else:
-        stepZ = 0
-    
+        frontCam = joystick.get_axis(7)
 
-    if abs(y_new)<.0001: #define a dead zone
+    deadZone = 0.0001
+    if abs(y_new)<deadZone: #define a dead zone
         y_new=0
-    if abs(x_new)<.0001: #define a dead zone
+    if abs(x_new)<deadZone: #define a dead zone
         x_new=0
     
-    if abs(zx_new)<.01: #define a dead zone
+    if abs(zx_new)<deadZone: #define a dead zone
         zx_new=0
-    if abs(zy_new)<.01: #define a dead zone
+    if abs(zy_new)<deadZone: #define a dead zone
         zy_new=0
     
-    if abs(z_new)<.0001: #define a dead zone
-        z_new=0
-    if abs(r_new)<.0001: #define a dead zone
+    if abs(r_new)<deadZone: #define a dead zone
         r_new=0
-    
-    if abs(stepX)<.01: #define a dead zone
-        stepX=0
-    if abs(stepY)<.01: #define a dead zone
-        stepY=0
-    if abs(stepZ)<.01: #define a dead zone
-        stepZ=0
-
-    if(stepX)>.07: #define a dead zone
-        stepX=1
-    """
     
     #rotate x and y axis of joystick 45 degrees
     
@@ -99,9 +68,11 @@ while True:
     y_new2=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
 
     #rotate thumb axes for up/down and roll movements
-    #zx_new2=(zx_new*math.cos(math.pi/-4))-(zy_new*math.sin(math.pi/-4)) #horizontal left
-    #zy_new2=(zx_new*math.sin(math.pi/-4))+(zy_new*math.cos(math.pi/-4)) #horizontal right
+    zx_new2=(zx_new*math.cos(math.pi/-4))-(zy_new*math.sin(math.pi/-4)) #horizontal left
+    zy_new2=(zx_new*math.sin(math.pi/-4))+(zy_new*math.cos(math.pi/-4)) #horizontal right
 
+    if not vert_mod:
+        z_mod = 0
 
     fl = ((-1*y_new2)+r_new) #front left thruster
     fr = ((-1*x_new2)+r_new) #front right thruster
@@ -120,12 +91,9 @@ while True:
     commands['frontRight'] = fr
     commands['backLeft'] = bl
     commands['backRight'] = br
-    commands['midLeft'] = -1*z_new
-    commands['midRight'] = z_new
-
-    commands['X'] = stepX
-    commands['Y'] = stepY
-    commands['Z'] = stepZ
+    commands['midLeft'] = (-1*zy_new2)-z_mod
+    commands['midRight'] = zx_new2+z_mod
+    commands['frontCamera'] = -1*frontCam
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
