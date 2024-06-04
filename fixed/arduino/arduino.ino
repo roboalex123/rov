@@ -16,7 +16,9 @@ Thruster thrusters[NUM_THRUSTERS] = {
   (Thruster(25, "midLeft")),
   (Thruster(26, "midRight")),
   (Thruster(27, "backLeft")),
-  (Thruster(24, "backRight"))
+  (Thruster(24, "backRight")),
+  (Thruster(53, "openClaw")),
+  (Thruster(51, "spinClaw"))
 };
 
 void setup() {
