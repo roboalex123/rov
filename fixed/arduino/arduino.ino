@@ -9,7 +9,7 @@ using namespace std;
 const int NUM_NORMAL_SERVOS = 1;
 rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "frontCamera")};
 
-const int NUM_THRUSTERS = 6;
+const int NUM_THRUSTERS = 8;
 Thruster thrusters[NUM_THRUSTERS] = {
   (Thruster(28, "frontLeft")),
   (Thruster(23, "frontRight")),

@@ -48,8 +48,8 @@ while True:
 
         frontCam = joystick.get_axis(7)
 
-        clawOpenAxis = joystick.get_axis(5)
-        clawSpinAxis = joystick1.get_axis(7)
+        clawOpenAxis = joystick.get_button(0)
+        clawSpinAxis = joystick.get_button(1)
 
     deadZone = 0.0001
     if abs(y_new)<deadZone: #define a dead zone
@@ -89,8 +89,7 @@ while True:
     br = max(-1, min(1, br))
     #zx_new = max(-1, min(1, zx_new))
     #zy_new = max(-1, min(1, zy_new))
-    clawOpenAxis = max(-1, min(1, clawOpenAxis))
-    clawSpinAxis = max(-1, min(1, clawSpinAxis))
+
 
     commands['frontLeft'] = fl
     commands['frontRight'] = fr
@@ -100,8 +99,8 @@ while True:
     commands['midRight'] = zx_new2+z_mod
     commands['frontCamera'] = -1*frontCam
 
-    commands['clawOpenAxis'] = clawSpinAxis
-    commands['clawSpinAxis'] = clawSpinAxis
+    commands['openClaw'] = clawSpinAxis
+    commands['spinClaw'] = clawSpinAxis
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
