@@ -9,7 +9,7 @@ import serial #needed to talk with Arduino
 
 pygame.init()
 
-ser = serial.Serial(port = 'COM5', baudrate = 9600, timeout = .1, dsrdtr = True) #dsrdtr = True stops Arduino Mega from autoresetting
+ser = serial.Serial(port = 'COM3', baudrate = 9600, timeout = .1, dsrdtr = True) #dsrdtr = True stops Arduino Mega from autoresetting
 
 vert_mod = False
 
