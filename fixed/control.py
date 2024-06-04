@@ -7,20 +7,22 @@ from pygame.rect import Rect
 #import widgets
 import serial #needed to talk with Arduino
 
+
+
 pygame.init()
 
 ser = serial.Serial(port = 'COM3', baudrate = 9600, timeout = .1, dsrdtr = True) #dsrdtr = True stops Arduino Mega from autoresetting
 
 vert_mod = False
 
-joystick = None
+leftJoystick = None
 if pygame.joystick.get_count()==0:
     print ('No joystick Detected')
 else:
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()#initalize joystick
-    joystick1 = pygame.joystick.Joystick(1)
-    joystick1.init()#initalize joystick
+    leftJoystick = pygame.joystick.Joystick(0)
+    leftJoystick.init()#initalize joystick
+    rightJoystick = pygame.joystick.Joystick(1)
+    rightJoystick.init()#initalize joystick
 
 while True:
         # Get input from joystick and keyboard
@@ -33,23 +35,25 @@ while True:
 
 # Commands to send ROV
     commands = {} #define python dictionary
-    if joystick is not None:
-        x_new=joystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
-        y_new=joystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
+    if leftJoystick is not None:
+        x_new=leftJoystick.get_axis(0)#left joystick -1 is left to +1 is right (left thruster)
+        y_new=leftJoystick.get_axis(1) #left joystick -1 is up +1 is down (right thruster)
 
-        zx_new = (joystick1.get_axis(0)*-0.75)
-        zy_new = (joystick1.get_axis(1)*-0.75)
+        zx_new = (rightJoystick.get_axis(0)*-0.75)
+        zy_new = (rightJoystick.get_axis(1)*-0.75)
 
-        z_mod = joystick1.get_axis(5)
-        if joystick.get_button(7):
+        z_mod = rightJoystick.get_axis(5)
+        if leftJoystick.get_button(7):
             vert_mod = not vert_mod
 
-        r_new=(joystick1.get_axis(2)*-0.25)
+        r_new=(rightJoystick.get_axis(2)*-0.25)
 
-        frontCam = joystick.get_axis(7)
+        frontCam = leftJoystick.get_axis(7)
 
-        clawOpenAxis = joystick.get_button(0)
-        clawSpinAxis = joystick.get_button(1)
+        clawOpenAxis = leftJoystick.get_axis(5)
+        clawClose = leftJoystick.get_button(1)*.25
+        clawSpinAxis = rightJoystick.get_axis(7)
+        clawSpinBack = leftJoystick.get_button(3)*.25
 
     deadZone = 0.0001
     if abs(y_new)<deadZone: #define a dead zone
@@ -99,8 +103,8 @@ while True:
     commands['midRight'] = zx_new2+z_mod
     commands['frontCamera'] = -1*frontCam
 
-    commands['openClaw'] = clawSpinAxis
-    commands['spinClaw'] = clawSpinAxis
+    commands['openClaw'] = clawOpenAxis - clawClose
+    commands['spinClaw'] = clawSpinAxis - clawSpinBack
 
     MESSAGE=json.dumps(commands)#puts python dictionary in Json format
     ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino
