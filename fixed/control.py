@@ -40,6 +40,9 @@ class Ramp:
 def main():
     pygame.init()
 
+    # screen = pygame.display.set_mode((640, 480))
+    # pygame.display.set_caption("Crush DEPTH")
+
     ser = serial.Serial(port = 'COM3', baudrate = 9600, timeout = .1, dsrdtr = True) #dsrdtr = True stops Arduino Mega from autoresetting
 
     vert_mod = False
@@ -60,7 +63,9 @@ def main():
     if rightJoystick is None or leftJoystick is None:
         print("Joystick error")
         exit(1)
-    while True:
+    
+    running = True
+    while running:
             # Get input from joystick and keyboard
         pygame.event.pump()
         key = pygame.key.get_pressed()
@@ -68,7 +73,12 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-
+        if key[pygame.K_j]:
+            running = False
+        
+        # screen.fill((255, 0, 0))
+        # pygame.display.flip()
+        
     # Commands to send ROV
         commands = {} #define python dictionary
 
