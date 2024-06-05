@@ -7,16 +7,7 @@ from pygame.rect import Rect
 #import widgets
 import serial #needed to talk with Arduino
 
-def clamp(value, min_value, max_value):
-    return max(min_value, min(value, max_value))
-
-def rotate45(xInputValue, yInputValue):
-    xValue = (xInputValue * math.cos(math.pi / -4)) - (yInputValue * math.sin(math.pi / -4))
-    yValue = (xInputValue * math.sin(math.pi / -4)) + (yInputValue * math.cos(math.pi / -4))
-    return xValue, yValue
-
-def offset(inputValue, offsetValue):
-    return inputValue + offsetValue
+from utility import *
 
 class Ramp:
     MAX = 0.75
@@ -71,7 +62,7 @@ def main():
 
     rightJoystick = None
     if pygame.joystick.get_count()==0:
-        print ('No joystick Detected')
+        print ("No joystick Detected")
         exit(1)
     else:
         rightJoystick = pygame.joystick.Joystick(0)
