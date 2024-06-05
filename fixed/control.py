@@ -36,6 +36,24 @@ class Ramp:
         else:
             return self.value
 
+class Motor:
+    MAX = 1.0
+    MIN = -1.0
+
+    def __init__(self, motorName, baseMotorValue, modifierMotorValue = 0, isNegative = False) -> None:
+        self.motorName = motorName
+        self.baseMotorValue = baseMotorValue
+        self.modifierMotorValue = modifierMotorValue
+        self.isNegative = isNegative
+
+    def getMotorName(self):
+        return self.motorName
+
+    def getMotorValue(self):
+        if self.isNegative:
+            self.baseMotorValue = -self.baseMotorValue
+
+        return clamp(offset(self.baseMotorValue, self.modifierMotorValue), Motor.MIN, Motor.MAX)
 
 def main():
     pygame.init()
@@ -49,6 +67,7 @@ def main():
 
     clawOpenRamp = Ramp()
     clawSpinRamp = Ramp()
+
 
     rightJoystick = None
     if pygame.joystick.get_count()==0:
@@ -128,26 +147,51 @@ def main():
         if not vert_mod:
             z_mod = 0
 
-        fl = offset(-y_new2, r_new)
-        fr = offset(-x_new2, r_new)
-        bl = offset(x_new2, r_new)
-        br = offset(-y_new2, r_new)
+        # list of motors
+        motors = [
+            # (motorName, baseMotorValue, modifierMotorValue 'optional', isNegative 'optional')
 
-        ml = offset(-zy_new2, -z_mod)
-        mr = offset(zx_new2, z_mod)
+            # xy_plane thrusters
+            Motor('frontLeft', y_new2, r_new, True),
+            Motor('frontRight', x_new2, r_new, True),
+            Motor('backLeft', x_new2, r_new),
+            Motor('backRight', y_new2, r_new),
 
-        commands['frontLeft'] = clamp(fl, -1, 1)
-        commands['frontRight'] = clamp(fr, -1, 1)
-        commands['backLeft'] = clamp(bl, -1, 1)
-        commands['backRight'] = clamp(br, -1, 1)
-        commands['midLeft'] = clamp(ml, -1, 1)
-        commands['midRight'] = clamp(mr, -1, 1)
-        commands['frontCamera'] = -frontCam
+            # z_axis thrusters
+            Motor('midLeft', zy_new2, -z_mod, True),
+            Motor('midRight', zx_new2, z_mod),
 
-        # claw code
-        commands['openClaw'] = clawOpen * clawOpenRamp.linearRamp(clawOpen)
+            # claw motors
+            Motor('openClaw', (clawOpen * clawOpenRamp.linearRamp(clawOpen))),
+            Motor('spinClaw', (clawSpin * clawSpinRamp.linearRamp(clawSpin))),
 
-        commands['spinClaw'] = clawSpin * clawSpinRamp.linearRamp(clawSpin)
+            # camera servos
+            Motor('frontCamera', frontCam, isNegative = True)
+            ]
+
+        # fl = offset(-y_new2, r_new)
+        # fr = offset(-x_new2, r_new)
+        # bl = offset(x_new2, r_new)
+        # br = offset(-y_new2, r_new)
+        #
+        # ml = offset(-zy_new2, -z_mod)
+        # mr = offset(zx_new2, z_mod)
+
+        for motor in motors:
+            commands[motor.getMotorName()] = motor.getMotorValue()
+
+        # commands['frontLeft'] = clamp(fl, -1, 1)
+        # commands['frontRight'] = clamp(fr, -1, 1)
+        # commands['backLeft'] = clamp(bl, -1, 1)
+        # commands['backRight'] = clamp(br, -1, 1)
+        # commands['midLeft'] = clamp(ml, -1, 1)
+        # commands['midRight'] = clamp(mr, -1, 1)
+        # commands['frontCamera'] = -frontCam
+
+        # # claw code
+        # commands['openClaw'] = clawOpen * clawOpenRamp.linearRamp(clawOpen)
+        #
+        # commands['spinClaw'] = clawSpin * clawSpinRamp.linearRamp(clawSpin)
 
         MESSAGE=json.dumps(commands)#puts python dictionary in Json format
         ser.write(bytes(MESSAGE, 'utf-8'))#byte format sent to arduino

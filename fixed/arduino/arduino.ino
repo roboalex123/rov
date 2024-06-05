@@ -7,16 +7,29 @@
 using namespace std;
 
 const int NUM_NORMAL_SERVOS = 1;
-rovServo normalServos[NUM_NORMAL_SERVOS] = {rovServo(22, "frontCamera")};
+rovServo normalServos[NUM_NORMAL_SERVOS] = {
+  // (pinNumber, name)
+
+  // camera servos
+  (rovServo(22, "frontCamera"))
+};
 
 const int NUM_THRUSTERS = 8;
 Thruster thrusters[NUM_THRUSTERS] = {
+  // (pinNumber, name)
+
+
+  // xy_plane thrusters
   (Thruster(28, "frontLeft")),
   (Thruster(23, "frontRight")),
-  (Thruster(25, "midLeft")),
-  (Thruster(26, "midRight")),
   (Thruster(27, "backLeft")),
   (Thruster(24, "backRight")),
+
+  // z_axis thrusters
+  (Thruster(25, "midLeft")),
+  (Thruster(26, "midRight")),
+
+  // claw thrusters
   (Thruster(53, "openClaw")),
   (Thruster(51, "spinClaw"))
 };
@@ -41,7 +54,7 @@ void loop() {
   if (Serial.available())
   {
     data = Serial.readStringUntil('\x7D');
-    // Serial.println(data);
+
     StaticJsonDocument<500> readDoc;
     deserializeJson(readDoc, data);
 
