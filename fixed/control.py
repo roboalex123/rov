@@ -86,11 +86,6 @@ def main():
 
         frontCam = rightJoystick.get_axis(7)
 
-        # clawOpenAxis = leftJoystick.get_axis(5)
-        # clawClose = leftJoystick.get_button(1)*.25
-        # clawSpinAxis = rightJoystick.get_axis(7)
-        # clawSpinBack = leftJoystick.get_button(3)*.25
-
         # button claw code (Right Joystick - right 4 buttons)
         clawOpenButton = rightJoystick.get_button(4)
         clawCloseButton = rightJoystick.get_button(5)
@@ -115,45 +110,26 @@ def main():
             r_new=0
         
         # rotate RIGHT joystck 45 degrees for translation 
-        # x_new2=(x_new*math.cos(math.pi/-4))-(y_new*math.sin(math.pi/-4)) #horizontal left
-        # y_new2=(x_new*math.sin(math.pi/-4))+(y_new*math.cos(math.pi/-4)) #horizontal right
         x_new2, y_new2 = rotate45(x_new, y_new)
 
         # rotate LEFT joystick 45 degrees for roll/vertical
-        # zx_new2=(zx_new*math.cos(math.pi/-4))-(zy_new*math.sin(math.pi/-4)) #horizontal left
-        # zy_new2=(zx_new*math.sin(math.pi/-4))+(zy_new*math.cos(math.pi/-4)) #horizontal right
         zx_new2, zy_new2 = rotate45(zx_new, zy_new)
 
         if not vert_mod:
             z_mod = 0
 
-        # fl = ((-1*y_new2)+r_new) #front left thruster
         fl = offset(-y_new2, r_new)
-        # fr = ((-1*x_new2)+r_new) #front right thruster
         fr = offset(-x_new2, r_new)
-        # bl = (x_new2+r_new) #back left thruster
         bl = offset(x_new2, r_new)
-        # br = ((-y_new2)+r_new) #back right thruster
         br = offset(-y_new2, r_new)
 
         ml = offset(-zy_new2, -z_mod)
         mr = offset(zx_new2, z_mod)
 
-        # clamp values to -1
-        # fl = max(-1, min(1, fl))
-        # fr = max(-1, min(1, fr))
-        # bl = max(-1, min(1, bl))
-        # br = max(-1, min(1, br))
-        #zx_new = max(-1, min(1, zx_new))
-        #zy_new = max(-1, min(1, zy_new))
-
-
         commands['frontLeft'] = clamp(fl, -1, 1)
         commands['frontRight'] = clamp(fr, -1, 1)
         commands['backLeft'] = clamp(bl, -1, 1)
         commands['backRight'] = clamp(br, -1, 1)
-        # commands['midLeft'] = (-1*zy_new2)-z_mod
-        # commands['midRight'] = zx_new2+z_mod
         commands['midLeft'] = clamp(ml, -1, 1)
         commands['midRight'] = clamp(mr, -1, 1)
         commands['frontCamera'] = -frontCam
